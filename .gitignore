@@ -13,5 +13,9 @@ compile_commands.json
 CTestTestfile.cmake
 build
 
+### executable files ###
+bin
 
+### result files ###
+result*
 # End of https://www.gitignore.io/api/cmake

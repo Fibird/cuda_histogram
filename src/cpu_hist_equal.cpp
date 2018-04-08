@@ -23,13 +23,58 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 using namespace cv;
 
-void hist_equal(const Mat src, Mat dst)
+// Data of Mat must be continuous, aka src can not be cut
+// Or check mat if continuous before using this function
+void hist_equal(const Mat &src, Mat &dst)
 {
-    // TODO:histgram equalize codes
+    if (!src.isContinuous())
+    {
+        cout << "The source image is not continuous!" << endl;
+        exit(EXIT_FAILURE); 
+    }
+    uchar *src_data = src.data;
+    int rows = src.rows, cols = src.cols;
+
+    // calculate histogram of source image
+    int hist[256];
+    for (unsigned int i = 0; i < rows * cols; ++i)
+    {
+       hist[src_data[i]]++; 
+    }
+    // normalize the histogram
+    float normal[256];
+    for (int i = 0; i < 256; ++i)
+    {
+        normal[i] = (float) hist[i] / rows * cols;
+    }
+    // compute cumulative histogram
+    float cumulative[256];
+    float temp = 0.f;
+    for (int i = 0; i < 256; ++i)
+    {
+        temp += normal[i];
+        cumulative[i] = temp;
+    }
+    // round the cumulative histogram
+    for (int i = 0; i < 256; ++i)
+    {
+        hist[i] = (int)(255.0f * cumulative[i] + 0.5);    
+    }
+    // map new image
+    if (!dst.data)
+    {
+        dst.create(src.size(), CV_8UC1);
+    }
+    uchar *dst_data = dst.data;
+    for (unsigned int i = 0; i < rows * cols; ++i)
+    {
+        dst_data[i] = (uchar)hist[src_data[i]];    
+    }
 }
 
 int main(int argc, char **argv)
@@ -50,7 +95,7 @@ int main(int argc, char **argv)
 
     hist_equal(img_src, img_rst);
 
-    imwrite("image/result.jpg", img_rst);
+    imwrite("images/result.jpg", img_rst);
 
     return 0;
 }
