@@ -28,7 +28,7 @@
 using namespace std;
 using namespace cv;
 
-// Data of Mat must be continuous, aka src can not be cut
+// Data of Mat must be continuous and gray scale, aka src can not be cut
 // Or check mat if continuous before using this function
 void hist_equal(const Mat &src, Mat &dst)
 {
@@ -38,23 +38,25 @@ void hist_equal(const Mat &src, Mat &dst)
         exit(EXIT_FAILURE); 
     }
     uchar *src_data = src.data;
-    int rows = src.rows, cols = src.cols;
+    unsigned int rows = src.rows, cols = src.cols;
 
     // calculate histogram of source image
     int hist[256];
+    memset(hist, 0, 256 * sizeof(int));
     for (unsigned int i = 0; i < rows * cols; ++i)
     {
        hist[src_data[i]]++; 
     }
     // normalize the histogram
-    float normal[256];
+    double normal[256];
+    unsigned int img_size = rows * cols;
     for (int i = 0; i < 256; ++i)
     {
-        normal[i] = (float) hist[i] / rows * cols;
+        normal[i] = ((double) hist[i]) / img_size;
     }
     // compute cumulative histogram
-    float cumulative[256];
-    float temp = 0.f;
+    double cumulative[256];
+    double temp = 0.f;
     for (int i = 0; i < 256; ++i)
     {
         temp += normal[i];
@@ -68,7 +70,7 @@ void hist_equal(const Mat &src, Mat &dst)
     // map new image
     if (!dst.data)
     {
-        dst.create(src.size(), CV_8UC1);
+        dst.create(src.size(), src.type());
     }
     uchar *dst_data = dst.data;
     for (unsigned int i = 0; i < rows * cols; ++i)
@@ -85,7 +87,7 @@ int main(int argc, char **argv)
         return -1;
     }
     Mat img_src, img_rst;
-    img_src = imread(argv[1], CV_LOAD_IMAGE_COLOR);
+    img_src = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
 
     if (!img_src.data)
     {
@@ -96,6 +98,5 @@ int main(int argc, char **argv)
     hist_equal(img_src, img_rst);
 
     imwrite("images/result.jpg", img_rst);
-
     return 0;
 }
