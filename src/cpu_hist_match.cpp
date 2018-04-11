@@ -33,13 +33,14 @@ void hist_match(Mat &src, Mat &dst, double hgram[]);
 
 int main(int argc, char **argv)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        cout << "Usage: hist_equal <image name>" << endl;
+        cout << "Usage: hist_equal <image name> <target image name>" << endl;
         return -1;
     }
-    Mat img_src, img_rst;
+    Mat img_src, img_rst, img_tgt;
     img_src = imread(argv[1], CV_LOAD_IMAGE_GRAYSCALE);
+    img_tgt = imread(argv[2], CV_LOAD_IMAGE_GRAYSCALE);
 
     if (!img_src.data)
     {
@@ -49,10 +50,9 @@ int main(int argc, char **argv)
     double hgram[256];
 
     // TODO:set target histogram
-
-    hist_match(img_src, img_rst, hgram);
-
-    imwrite("images/result.jpg", img_rst);    
+    hist_match(img_src, img_rst, img_tgt);
+//    hist_match(img_src, img_rst, hgram);
+    bool flag = imwrite("images/result2.jpg", img_rst);    
     return 0;
 }
 
