@@ -85,7 +85,66 @@ void hist_match(Mat &src, Mat &dst, Mat &tgt)
 
 void hist_match(Mat &src, Mat &dst, double hgram[])
 {
-   // TODO:implement histogram match from target histogram 
+    if (!src.isContinuous())
+    {
+        cout << "The source image is not continuous!" << endl;
+        exit(EXIT_FAILURE); 
+    }
+    uchar *src_data = src.data;
+    unsigned int rows = src.rows, cols = src.cols;
+
+    // calculate histogram of source image
+    int hist[256];
+    memset(hist, 0, 256 * sizeof(int));
+    for (unsigned int i = 0; i < rows * cols; ++i)
+    {
+       hist[src_data[i]]++; 
+    }
+    // normalize the histogram
+    double normal[256];
+    unsigned int img_size = rows * cols;
+    for (int i = 0; i < 256; ++i)
+    {
+        normal[i] = ((double) hist[i]) / img_size;
+    }
+    // compute cumulative histogram
+    double src_cumulative[256], tgt_cumulative[256];
+    double temp1 = 0.f, temp2 = 0.f;
+    for (int i = 0; i < 256; ++i)
+    {
+        temp1 += normal[i];
+        temp2 += hgram[i];
+        src_cumulative[i] = temp1;
+        tgt_cumulative[i] = temp2;
+    }
+    
+    // using group map law(GML)
+    int min_ids[256];
+    for (int i = 0; i < 256; ++i)
+    {
+        double min_value = abs(tgt_cumulative[i] - src_cumulative[0]);
+        int min_index = 0;
+        for (int j = 1; j < 256; ++j)
+        {
+            double temp = abs(tgt_cumulative[i] - src_cumulative[j]);
+            /* temp = abs(src_cumulative[i]- tgt_cumulative[j]); // single map law(SML)*/
+            if (temp < min_value)
+            {
+                min_value = temp;
+                min_index = j;
+            }
+        }
+        min_ids[i] = min_index;
+    } 
+    
+    // map dst image
+    if (!dst.data)
+    {
+        dst.create(src.size(), src.type());
+    }
+    uchar *dst_data = dst.data;
+    for (unsigned int i = 0; i < rows * cols; ++i)
+    {
+        dst_data[i] = (uchar)min_ids[src_data[i]];    
+    }
 }
-
-
