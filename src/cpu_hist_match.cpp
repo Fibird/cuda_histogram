@@ -27,9 +27,9 @@ using namespace std;
 using namespace cv;
 
 // implement histogram match from target image
-void hist_match(Mat &src, Mat &dst, Mat &tgt);
+void hist_match(const Mat &src, Mat &dst, const Mat &tgt);
 // implement histogram match from target histogram
-void hist_match(Mat &src, Mat &dst, double hgram[]);
+void hist_match(const Mat &src, Mat &dst, const double hgram[]);
 
 int main(int argc, char **argv)
 {
@@ -49,14 +49,13 @@ int main(int argc, char **argv)
     }
     double hgram[256];
 
-    // TODO:set target histogram
     hist_match(img_src, img_rst, img_tgt);
 //    hist_match(img_src, img_rst, hgram);
-    bool flag = imwrite("images/result2.jpg", img_rst);    
+    imwrite("images/result2.jpg", img_rst);    
     return 0;
 }
 
-void hist_match(Mat &src, Mat &dst, Mat &tgt)
+void hist_match(const Mat &src, Mat &dst, const Mat &tgt)
 {
     if (!tgt.isContinuous())
     {
@@ -83,7 +82,7 @@ void hist_match(Mat &src, Mat &dst, Mat &tgt)
     hist_match(src, dst, normal);
 }
 
-void hist_match(Mat &src, Mat &dst, double hgram[])
+void hist_match(const Mat &src, Mat &dst, const double hgram[])
 {
     if (!src.isContinuous())
     {
@@ -118,16 +117,17 @@ void hist_match(Mat &src, Mat &dst, double hgram[])
         tgt_cumulative[i] = temp2;
     }
     
-    // using group map law(GML)
+    // using single map law(SML)
     int min_ids[256];
     for (int i = 0; i < 256; ++i)
     {
-        double min_value = abs(tgt_cumulative[i] - src_cumulative[0]);
+//        double min_value = abs(tgt_cumulative[i] - src_cumulative[0]);  // group map law(GML)
+        double min_value = abs(src_cumulative[i] - tgt_cumulative[0]);
         int min_index = 0;
         for (int j = 1; j < 256; ++j)
         {
-            double temp = abs(tgt_cumulative[i] - src_cumulative[j]);
-            /* temp = abs(src_cumulative[i]- tgt_cumulative[j]); // single map law(SML)*/
+//            double temp = abs(tgt_cumulative[i] - src_cumulative[j]);  // group map law(GML)
+            double temp = abs(src_cumulative[i]- tgt_cumulative[j]); 
             if (temp < min_value)
             {
                 min_value = temp;
