@@ -1,7 +1,7 @@
 #include <iostream>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
-#include "cpu_histogram.h"
+#include "gpu_histogram.h"
 
 using namespace std;
 using namespace cv;
@@ -22,10 +22,10 @@ int main(int argc, char **argv)
         cout << "Can not find image file!" << endl;
         return -1;
     }
-    double hgram[256];
+//    unsigned hgram[256];
 
-    hist_match(img_src, img_rst, img_tgt);
+    cuHistMatch(img_src, img_rst, img_tgt);
 //    hist_match(img_src, img_rst, hgram);
-    imwrite("result/cpuMatchResult.jpg", img_rst);    
+    imwrite("result/gpuMatchResult.jpg", img_rst);    
     return 0;
 }

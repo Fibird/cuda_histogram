@@ -23,6 +23,6 @@ int main(int argc, char **argv)
 
     cuHistEqual(img_src, img_rst);
 
-    imwrite("result/cuResult.jpg", img_rst);
+    imwrite("result/gpuEqualResult.jpg", img_rst);
     return 0;
 }

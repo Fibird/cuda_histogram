@@ -23,6 +23,6 @@ int main(int argc, char **argv)
 
     hist_equal(img_src, img_rst);
 
-    imwrite("result/cpuResult.jpg", img_rst);
+    imwrite("result/cpuEqualResult.jpg", img_rst);
     return 0;
 }

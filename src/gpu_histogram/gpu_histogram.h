@@ -42,6 +42,6 @@ void cuHistEqual(cv::Mat &src, cv::Mat &dst);
 void cuHistMatch(cv::Mat &src, cv::Mat &dst, cv::Mat &tgt);
 
 // implement histogram match from target histogram
-void cuHistMatch(cv::Mat &src, cv::Mat &dst, double hgram[]);
+void cuHistMatch(cv::Mat &src, cv::Mat &dst, unsigned hgram[]);
 
 #endif
