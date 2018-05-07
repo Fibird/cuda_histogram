@@ -19,6 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  
+#ifndef CPU_HISTOGRAM_H
+#define CPU_HISTOGRAM_H
+
 #include <opencv2/core/core.hpp>
 
 void hist_equal(const cv::Mat &src, cv::Mat &dst);
@@ -26,3 +29,5 @@ void hist_equal(const cv::Mat &src, cv::Mat &dst);
 void hist_match(const cv::Mat &src, cv::Mat &dst, const cv::Mat &tgt);
 // implement histogram match from target histogram
 void hist_match(const cv::Mat &src, cv::Mat &dst, const double hgram[]);
+
+#endif

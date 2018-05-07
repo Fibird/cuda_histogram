@@ -1,6 +1,6 @@
 #include <iostream>
 #include <opencv2/highgui/highgui.hpp>
-#include "cpu_histogram.h"
+#include "gpu_histogram.h"
 
 using namespace std;
 using namespace cv;
@@ -21,8 +21,8 @@ int main(int argc, char **argv)
         return -1;
     }
 
-    hist_equal(img_src, img_rst);
+    cuHistEqual(img_src, img_rst);
 
-    imwrite("result/cpuResult.jpg", img_rst);
+    imwrite("result/cuResult.jpg", img_rst);
     return 0;
 }

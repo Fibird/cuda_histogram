@@ -1,4 +1,3 @@
-#include <opencv2/core/core.hpp>
 #include <iostream>
 #include <cstdlib>
 #include "cpu_histogram.h"
