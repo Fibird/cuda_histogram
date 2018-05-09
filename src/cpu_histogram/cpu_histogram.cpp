@@ -6,7 +6,7 @@ using namespace cv;
 
 // Data of Mat must be continuous and gray scale, aka src can not be cut
 // Or check mat if continuous before using this function
-void hist_equal(const Mat &src, Mat &dst)
+void hist_equal(Mat &src, Mat &dst)
 {
     if (!src.isContinuous())
     {
@@ -56,7 +56,7 @@ void hist_equal(const Mat &src, Mat &dst)
 }
 
 
-void hist_match(const Mat &src, Mat &dst, const Mat &tgt)
+void hist_match(Mat &src, Mat &dst, Mat &tgt)
 {
     if (!tgt.isContinuous())
     {
@@ -80,10 +80,10 @@ void hist_match(const Mat &src, Mat &dst, const Mat &tgt)
     {
         normal[i] = ((double) hist[i]) / img_size;
     }
-    hist_match(src, dst, normal);
+    hist_match(src, dst, hist, img_size);
 }
 
-void hist_match(const Mat &src, Mat &dst, const double hgram[])
+void hist_match(Mat &src, Mat &dst, int hgram[], unsigned hgSize)
 {
     if (!src.isContinuous())
     {
@@ -100,22 +100,16 @@ void hist_match(const Mat &src, Mat &dst, const double hgram[])
     {
        hist[src_data[i]]++; 
     }
-    // normalize the histogram
-    double normal[256];
     unsigned int img_size = rows * cols;
-    for (int i = 0; i < 256; ++i)
-    {
-        normal[i] = ((double) hist[i]) / img_size;
-    }
+
     // compute cumulative histogram
     double src_cumulative[256], tgt_cumulative[256];
-    double temp1 = 0.f, temp2 = 0.f;
-    for (int i = 0; i < 256; ++i)
+    src_cumulative[0] = hist[0];
+    tgt_cumulative[0] = hgram[0];
+    for (int i = 1; i < 256; ++i)
     {
-        temp1 += normal[i];
-        temp2 += hgram[i];
-        src_cumulative[i] = temp1;
-        tgt_cumulative[i] = temp2;
+        src_cumulative[i] = src_cumulative[i - 1] + (double)hist[i] / img_size;
+        tgt_cumulative[i] = tgt_cumulative[i - 1] + (double)hgram[i] / hgSize;
     }
     
     // using group map law(GML)

@@ -137,13 +137,13 @@ void cuHistMatch(cv::Mat &src, cv::Mat &dst, cv::Mat &tgt)
 
     unsigned tgtHist[256];
     CHECK(cudaMemcpy(tgtHist, devHist, sizeof(unsigned) * 256, cudaMemcpyDeviceToHost));
-    cuHistMatch(src, dst, tgtHist);
+    cuHistMatch(src, dst, tgtHist, width * height);
 
     CHECK(cudaFree(devHist));
     CHECK(cudaFree(devTgt));
 }
 
-void cuHistMatch(cv::Mat &src, cv::Mat &dst, unsigned hgram[])
+void cuHistMatch(cv::Mat &src, cv::Mat &dst, unsigned hgram[], unsigned hgSize)
 {
     if (!src.isContinuous())
     {
@@ -185,7 +185,7 @@ void cuHistMatch(cv::Mat &src, cv::Mat &dst, unsigned hgram[])
     for (int i = 1; i < 256; ++i)
     {
         srcAccums[i] = srcAccums[i - 1] + (double)hostHist[i] / (width * height);
-        tgtAccums[i] = tgtAccums[i - 1] + (double)hgram[i] / (width * height); 
+        tgtAccums[i] = tgtAccums[i - 1] + (double)hgram[i] / hgSize; 
     }
 
     // using group map law(GML)

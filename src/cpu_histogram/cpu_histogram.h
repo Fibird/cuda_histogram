@@ -24,10 +24,10 @@
 
 #include <opencv2/core/core.hpp>
 
-void hist_equal(const cv::Mat &src, cv::Mat &dst);
+void hist_equal(cv::Mat &src, cv::Mat &dst);
 // implement histogram match from target image
-void hist_match(const cv::Mat &src, cv::Mat &dst, const cv::Mat &tgt);
+void hist_match(cv::Mat &src, cv::Mat &dst, cv::Mat &tgt);
 // implement histogram match from target histogram
-void hist_match(const cv::Mat &src, cv::Mat &dst, const double hgram[]);
+void hist_match(cv::Mat &src, cv::Mat &dst, int hgram[], unsigned hgSize);
 
 #endif
