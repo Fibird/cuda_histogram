@@ -180,8 +180,8 @@ void cuHistMatch(cv::Mat &src, cv::Mat &dst, unsigned hgram[], unsigned hgSize)
     cudaMemcpy(hostHist, devHist, sizeof(unsigned) * 256, cudaMemcpyDeviceToHost);
     
     double srcAccums[256], tgtAccums[256];
-    srcAccums[0] = hostHist[0];
-    tgtAccums[0] = hgram[0];
+    srcAccums[0] = hostHist[0] / (width * height);
+    tgtAccums[0] = hgram[0] / hgSize;
     for (int i = 1; i < 256; ++i)
     {
         srcAccums[i] = srcAccums[i - 1] + (double)hostHist[i] / (width * height);

@@ -104,8 +104,8 @@ void hist_match(Mat &src, Mat &dst, int hgram[], unsigned hgSize)
 
     // compute cumulative histogram
     double src_cumulative[256], tgt_cumulative[256];
-    src_cumulative[0] = hist[0];
-    tgt_cumulative[0] = hgram[0];
+    src_cumulative[0] = hist[0] / img_size;
+    tgt_cumulative[0] = hgram[0] / hgSize;
     for (int i = 1; i < 256; ++i)
     {
         src_cumulative[i] = src_cumulative[i - 1] + (double)hist[i] / img_size;
